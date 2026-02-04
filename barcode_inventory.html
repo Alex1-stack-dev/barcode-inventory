@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Inventory Application</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        /* Add your styles here */
+    </style>
+</head>
+<body>
+    <h1>Barcode Inventory Application</h1>
+    <div id="live-preview"></div>
+
+    <form id="inventory-form">
+        <label for="barcode">Barcode:</label>
+        <input type="text" id="barcode" required>
+        <button type="button" id="generate">Generate Barcode</button>
+    </form>
+
+    <button id="print">Print</button>
+    <button id="csv-import">Import CSV</button>
+    <button id="csv-export">Export CSV</button>
+
+    <script>
+        // Variables for batch management
+        let inventory = [];
+        let batch = [];
+
+        // Function to generate barcode
+        function generateBarcode(data) {
+            // Logic for generating barcode
+            console.log('Generating barcode:', data);
+            return 'barcode-generated-string';
+        }
+
+        // Form validation and error handling
+        document.getElementById('inventory-form').onsubmit = function(e) {
+            e.preventDefault();
+            const barcodeValue = document.getElementById('barcode').value.trim();
+            if (!barcodeValue) {
+                alert('Barcode cannot be empty!');
+                return;
+            }
+            const newBarcode = generateBarcode(barcodeValue);
+            batch.push(newBarcode);
+            localStorage.setItem('batch', JSON.stringify(batch));
+            // Clear form and preview
+            document.getElementById('barcode').value = '';
+            document.getElementById('live-preview').innerText = 'Preview: ' + newBarcode;
+        };
+
+        // Camera scanner with debouncing logic
+        function debounce(func, delay) {
+            let timeout;
+            return function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, arguments), delay);
+            };
+        }
+
+        // Live barcode preview
+        document.getElementById('barcode').addEventListener('input', debounce(function(event) {
+            const liveValue = event.target.value;
+            document.getElementById('live-preview').innerText = 'Preview: ' + liveValue;
+        }, 300));
+
+        // Auto-clear batch after generation
+        document.getElementById('generate').onclick = function() {
+            batch = [];
+            alert('Batch cleared after generation!');
+        };
+
+        // CSV import/export functionality
+        document.getElementById('csv-import').onclick = function() {
+            // Logic for CSV import
+            console.log('CSV Import triggered!');
+        };
+
+        document.getElementById('csv-export').onclick = function() {
+            // Logic for CSV export
+            console.log('CSV Export triggered!');
+        };
+    </script>
+</body>
+</html>
